@@ -28,3 +28,22 @@ def user_register(user_name,user_password,register_date):
     finally:
         if cursor : cursor.close()
         if connection : connection.close()
+
+def user_login(user_name, user_password, login_date):
+    connection = None
+    cursor = None
+    try:
+        connection = db_connect()
+        cursor = connection.cursor()
+        query = """
+            SELECT user_name, user_password, login_date) VALUES(%s,%s,%s)
+        """
+        cursor.execute(query, (user_name, user_password, login_date))
+        connection.commit()
+        return True
+    except (Exception, Error) as error:
+        print("Database Error:", error)
+        return False
+    finally:
+        if cursor: cursor.close()
+        if connection: connection.close()
