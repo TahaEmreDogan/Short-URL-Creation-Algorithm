@@ -3,6 +3,8 @@ from datetime import datetime
 import tkinter as tk
 from tkinter import messagebox, ttk
 
+current_user = None
+
 def register():
     user_name = entry_username.get()
     user_password = entry_password.get()
@@ -19,6 +21,7 @@ def register():
         messagebox.showerror("Error", "Registration failed!")
 
 def login():
+    global current_user
     user_name = entry_username.get()
     user_password = entry_password.get()
     if not user_name or not user_password:
@@ -26,9 +29,14 @@ def login():
         return
     success = user_login(user_name, user_password)
     if success:
+        current_user = user_name
         messagebox.showinfo("Login", "Login successful!")
         entry_username.delete(0, tk.END)
         entry_password.delete(0, tk.END)
+        notebook.hide(user_frame)
+        notebook.select(url_frame)
+        user_box_var.set(f"👤 {current_user}")
+        user_box_label.place(relx=1.0, rely=0.0, anchor="ne")
     else:
         messagebox.showerror("Login", "Login failed!")
 
@@ -109,5 +117,9 @@ if __name__ == "__main__":
     instructions = ttk.Label(url_frame, text="Enter a long URL and get a short, shareable link!", 
                            font=('Arial', 9), foreground='#7f8c8d')
     instructions.pack(pady=20)
+
+    user_box_var = tk.StringVar()
+    user_box_label = ttk.Label(url_frame, textvariable=user_box_var, style='Header.TLabel', anchor="e")
+    user_box_label.place_forget()
 
     root.mainloop()
