@@ -7,6 +7,28 @@ import pyperclip
 current_user = None
 current_user_id = None
 
+def shorten_url():
+    original_url = entry_url.get()
+    if not original_url:
+        messagebox.showerror("Error", "Please enter a URL!")
+        return
+    shortened = shorten_links(current_user_id, original_url, "")
+    if shortened:
+        messagebox.showinfo("URL Shortened", f"Shortened URL: {shortened}")
+        entry_url.delete(0, tk.END)
+        short_url_var.set(shortened)
+        load_user_links()
+    else:
+        messagebox.showerror("Error", "URL shortening failed!")
+
+def copy_short_url():
+    short_url = short_url_var.get()
+    if short_url:
+        short_url_entry.config(state='normal')
+        short_url_entry.selection_range(0, tk.END)
+        short_url_entry.focus_set()
+        messagebox.showinfo("Selected", "Shortened URL selected, you can copy it with Ctrl+C!")
+
 def load_user_links():
     for row in links_tree.get_children():
         links_tree.delete(row)
@@ -63,30 +85,7 @@ def login():
     else:
         messagebox.showerror("Login", "Login failed!")
 
-def copy_short_url():
-    short_url = short_url_var.get()
-    if short_url:
-        short_url_entry.config(state='normal')
-        short_url_entry.selection_range(0, tk.END)
-        short_url_entry.focus_set()
-        messagebox.showinfo("Selected", "Shortened URL selected, you can copy it with Ctrl+C!")
 
-def shorten_url():
-    if not current_user or not current_user_id:
-        messagebox.showerror("Error", "Please login first!")
-        return
-    original_url = entry_url.get()
-    if not original_url:
-        messagebox.showerror("Error", "Please enter a URL!")
-        return
-    shortened = shorten_links(current_user_id, original_url, "")
-    if shortened:
-        messagebox.showinfo("URL Shortened", f"Shortened URL: {shortened}")
-        entry_url.delete(0, tk.END)
-        short_url_var.set(shortened)
-        load_user_links()
-    else:
-        messagebox.showerror("Error", "URL shortening failed!")
 
 def logout():
     global current_user, current_user_id
